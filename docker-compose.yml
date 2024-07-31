@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  demo:
+    build: .
+    container_name: demo
+    hostname: demo
+    ports:
+      - '8080:8080'
