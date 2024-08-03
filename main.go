@@ -29,6 +29,8 @@ func toMB(b uint64) float64 {
 	return float64(b) / float64(MB)
 }
 
+var first = true
+
 func main() {
 	host, err := os.Hostname()
 	if err != nil {
@@ -52,7 +54,11 @@ func main() {
 	}))
 
 	http.HandleFunc("/readiness", l(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(5 * time.Second)
+		if first {
+			time.Sleep(5 * time.Second)
+			first = false
+		}
+
 		w.Write(status("ready", host))
 	}))
 
