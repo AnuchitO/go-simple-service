@@ -1,3 +1,6 @@
+GIT_COMMIT := $(shell git rev-parse --short HEAD)
+VERSION := "v0.0.1"
+
 .PHONY: run
 run:
 	@echo "Running the program"
@@ -7,7 +10,7 @@ run:
 build-image:
 	@echo "Building the docker image"
 	# build and replace the image
-	docker build --rm -t simple-service .
+	docker build --rm -t simple-service --build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg VERSION=${VERSION} .
 
 .PHONY: run-container
 run-container:

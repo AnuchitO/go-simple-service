@@ -29,6 +29,10 @@ func toMB(b uint64) float64 {
 	return float64(b) / float64(MB)
 }
 
+// go build -ldflags "-X main.version=v1.0.0 -X main.commit=123456"
+var commit string
+var version string = "v0.0.0"
+
 var first = true
 
 func main() {
@@ -98,5 +102,5 @@ func versions() string {
 	arch := runtime.GOARCH
 	host, _ := os.Hostname()
 
-	return fmt.Sprintf(`{"go": "%s", "os": "%s", "arch": "%s", "host": "%s"}`, goVersion, osVersion, arch, host)
+	return fmt.Sprintf(`{"go": "%s", "os": "%s", "arch": "%s", "host": "%s", "commit": "%s", "version": "%s"}`, goVersion, osVersion, arch, host, commit, version)
 }
