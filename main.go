@@ -36,6 +36,7 @@ func main() {
 	if err != nil {
 		log.Println("error get hostname:", err)
 	}
+
 	http.HandleFunc("/", l(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(status("I am ok", host))
 	}))
@@ -45,8 +46,10 @@ func main() {
 		w.Write([]byte(metrics()))
 	}))
 
-	http.HandleFunc("/healthz", l(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(status("ok", host))
+	http.HandleFunc("/versions", l(func(w http.ResponseWriter, r *http.Request) {
+		v := versions()
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(v))
 	}))
 
 	http.HandleFunc("/liveness", l(func(w http.ResponseWriter, r *http.Request) {
@@ -87,4 +90,13 @@ func metrics() string {
 	stackInuse := toMB(mem.StackInuse)
 	stackSys := toMB(mem.StackSys)
 	return fmt.Sprintf(`{"size": "MB", "Alloc": %.2f, "TotalAlloc": %.2f, "Sys": %.2f, "HeapInuse": %.2f, "HeapIdle": %.2f, "HeapReleased": %.2f, "StackInuse": %.2f, "StackSys": %.2f}`, alloc, totalAlloc, sysAlloc, heapInuse, heapIdle, heapReleased, stackInuse, stackSys)
+}
+
+func versions() string {
+	goVersion := runtime.Version()
+	osVersion := runtime.GOOS
+	arch := runtime.GOARCH
+	host, _ := os.Hostname()
+
+	return fmt.Sprintf(`{"go": "%s", "os": "%s", "arch": "%s", "host": "%s"}`, goVersion, osVersion, arch, host)
 }

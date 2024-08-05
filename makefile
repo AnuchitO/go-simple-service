@@ -7,7 +7,7 @@ run:
 build-image:
 	@echo "Building the docker image"
 	# build and replace the image
-	docker build -t simple-service .
+	docker build --rm -t simple-service .
 
 .PHONY: run-container
 run-container:
