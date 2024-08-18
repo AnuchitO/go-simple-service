@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
 	"runtime"
+	"syscall"
 	"time"
 )
 
@@ -79,6 +83,7 @@ func main() {
 	}
 
 	// TODO: graceful shutdown
+	// go gracefully(srv)
 
 	log.Printf("start server at host %s port %s\n", host, port)
 	log.Fatal(http.ListenAndServe(host+":"+port, nil))
@@ -119,4 +124,21 @@ func versions() string {
 	host, _ := os.Hostname()
 
 	return fmt.Sprintf(`{"go": "%s", "os": "%s", "arch": "%s", "host": "%s", "commit": "%s", "version": "%s"}`, goVersion, osVersion, arch, host, commit, version)
+}
+
+func gracefully(srv *http.Server) {
+	{
+		ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Kill, os.Interrupt)
+		defer cancel()
+		<-ctx.Done()
+	}
+
+	d := time.Duration(5 * time.Second)
+	slog.Info(fmt.Sprintf("Server shutting down within %d ...\n", d))
+
+	ctx, cancel := context.WithTimeout(context.Background(), d)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		slog.Info("shutting down error:" + err.Error())
+	}
 }
