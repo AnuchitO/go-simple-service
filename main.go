@@ -78,6 +78,8 @@ func main() {
 		port = "8080"
 	}
 
+	// TODO: graceful shutdown
+
 	log.Printf("start server at host %s port %s\n", host, port)
 	log.Fatal(http.ListenAndServe(host+":"+port, nil))
 }
