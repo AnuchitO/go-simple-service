@@ -25,8 +25,12 @@ const (
 	MB
 )
 
-func toMB(b uint64) float64 {
+func megabytes(b uint64) float64 {
 	return float64(b) / float64(MB)
+}
+
+func toMB(b uint64) string {
+	return fmt.Sprintf("%.2f MB", megabytes(b))
 }
 
 // go build -ldflags "-X main.version=v1.0.0 -X main.commit=123456"
@@ -85,15 +89,25 @@ func status(s string, h string) []byte {
 func metrics() string {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
-	alloc := toMB(mem.Alloc)
-	totalAlloc := toMB(mem.TotalAlloc)
-	sysAlloc := toMB(mem.Sys)
-	heapInuse := toMB(mem.HeapInuse)
-	heapIdle := toMB(mem.HeapIdle)
-	heapReleased := toMB(mem.HeapReleased)
-	stackInuse := toMB(mem.StackInuse)
-	stackSys := toMB(mem.StackSys)
-	return fmt.Sprintf(`{"size": "MB", "Alloc": %.2f, "TotalAlloc": %.2f, "Sys": %.2f, "HeapInuse": %.2f, "HeapIdle": %.2f, "HeapReleased": %.2f, "StackInuse": %.2f, "StackSys": %.2f}`, alloc, totalAlloc, sysAlloc, heapInuse, heapIdle, heapReleased, stackInuse, stackSys)
+
+	return fmt.Sprintf(`{
+  "alloc": %q,
+  "totalAlloc": %q,
+  "sysAlloc": %q,
+  "heapInuse": %q,
+  "heapIdle": %q,
+  "heapReleased": %q,
+  "stackInuse": %q,
+  "stackSys": %q
+}`, toMB(mem.Alloc),
+		toMB(mem.TotalAlloc),
+		toMB(mem.Sys),
+		toMB(mem.HeapInuse),
+		toMB(mem.HeapIdle),
+		toMB(mem.HeapReleased),
+		toMB(mem.StackInuse),
+		toMB(mem.StackSys),
+	)
 }
 
 func versions() string {
