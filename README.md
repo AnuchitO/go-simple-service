@@ -12,11 +12,11 @@ make compose-up
 ## Containerize
 
 ```bash
-make build-image
+make docker-build
 ```
 then
 ```bash
-make run-container
+make docker-run
 ```
 
 
