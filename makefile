@@ -6,14 +6,14 @@ run:
 	@echo "Running the program"
 	go run main.go
 
-.PHONY: build-image
-build-image:
+.PHONY: docker-build
+docker-build:
 	@echo "Building the docker image"
 	# build and replace the image
 	docker build --rm -t simple-service --build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg VERSION=${VERSION} .
 
-.PHONY: run-container
-run-container:
+.PHONY: docker-run
+docker-run:
 	@echo "Running the container"
 	# run the container
 	docker run -e PORT=8080 -p 8080:8080 simple-service
