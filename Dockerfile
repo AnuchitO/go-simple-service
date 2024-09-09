@@ -19,7 +19,8 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-X main.commit=$GIT_COMMIT -X main.version=$VERSION" -o demo .
 
 # Step 7: Use alpine image as base image
-FROM scratch
+#FROM scratch
+FROM alpine:3.14
 
 # Step 8: Copy the binary from builder image to scratch image
 COPY --from=builder /app/demo /app/demo
