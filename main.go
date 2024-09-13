@@ -50,6 +50,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", l(func(w http.ResponseWriter, r *http.Request) {
+		// TODO: list all endpoints that available: GET /metrics, GET /versions, GET /liveness, GET /readiness
 		w.Write(status("I am ok", host))
 	}))
 
